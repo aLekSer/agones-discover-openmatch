@@ -34,7 +34,7 @@ TESTS    := $(shell find internal cmd -name '*.go' -type f -not -name '*.pb.go' 
 
 OCTOPS_BIN := bin/agones-openmatch
 
-IMAGE_REPO=octops/agones-openmatch
+IMAGE_REPO=gcr.io/backfill-dev/agones-openmatch
 DOCKER_IMAGE_TAG ?= $(IMAGE_REPO):${VERSION}
 RELEASE_TAG=0.1.0
 

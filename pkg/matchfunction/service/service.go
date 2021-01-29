@@ -1,6 +1,8 @@
 package service
 
 import (
+	"log"
+
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
 	"github.com/Octops/agones-discover-openmatch/pkg/matchfunction/functions"
 	"github.com/pkg/errors"
@@ -31,7 +33,13 @@ func (s *MatchFunctionService) Run(req *pb.RunRequest, stream pb.MatchFunction_R
 		return err
 	}
 
-	proposals, err := s.makeMatchesFunc(req.GetProfile(), poolTickets)
+	backfills, err := matchfunction.QueryBackfillPools(stream.Context(), s.queryServiceClient, req.GetProfile().GetPools())
+	if err != nil {
+		log.Printf("Failed to query backfills for the given pool, got %s", err.Error())
+		return err
+	}
+
+	proposals, err := s.makeMatchesFunc(req.GetProfile(), poolTickets, backfills)
 	if err != nil {
 		err = errors.Wrap(err, "failed to make matches")
 		s.logger.Error(err)

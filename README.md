@@ -131,7 +131,7 @@ The scenario considered for the matchmaking takes into consideration the followi
 
 **Important**
 
-*The following documentation covers the use case where the Director is using the Octops Discover to find and allocated gameservers. Alternatively, this project also provides the option to use the Agones Allocator service. Check the [docs/agones-allocator.md](docs/agones-allocator.md) document for instructions.*
+*The following documentation covers the use case where the Director is using the Octops Discover to find and allocate gameservers. Alternatively, this project also provides the option to use the Agones Allocator service. Check the [docs/agones-allocator.md](docs/agones-allocator.md) document for instructions.*
     
 The allocation service will try to find a GameServer that matches the criteria found on the `Extension` field of the `AssignTicketsRequest`. This information must match with Labels (Region and World) from the Fleet and GameServer.
 

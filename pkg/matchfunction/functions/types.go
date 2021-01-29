@@ -2,6 +2,7 @@ package functions
 
 import (
 	"errors"
+
 	"open-match.dev/open-match/pkg/pb"
 )
 
@@ -10,4 +11,4 @@ var (
 	ErrPoolTicketsIsNil  = errors.New("PoolTickets can't be nil")
 )
 
-type MakeMatchesFunc func(profile *pb.MatchProfile, poolTickets map[string][]*pb.Ticket) ([]*pb.Match, error)
+type MakeMatchesFunc func(profile *pb.MatchProfile, poolTickets map[string][]*pb.Ticket, poolBackfills map[string][]*pb.Backfill) ([]*pb.Match, error)

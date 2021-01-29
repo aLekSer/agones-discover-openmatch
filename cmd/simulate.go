@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"context"
+
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
 	"github.com/Octops/agones-discover-openmatch/pkg/app"
 	"github.com/spf13/cobra"
@@ -30,7 +31,7 @@ var (
 // simulateCmd represents the simulate command
 var simulateCmd = &cobra.Command{
 	Use:   "simulate",
-	Short: "Simulate players requesting matches on a interval basis",
+	Short: "Simulate players requesting matches on an interval basis",
 	Long:  `The Player Simulator will request matches on a interval basis for different pool of players.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := runtime.NewLogger(true).WithField("source", "player_simulator")

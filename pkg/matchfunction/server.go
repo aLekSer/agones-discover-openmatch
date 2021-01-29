@@ -3,6 +3,9 @@ package matchfunction
 import (
 	"context"
 	"fmt"
+	"net"
+	"time"
+
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
 	"github.com/Octops/agones-discover-openmatch/pkg/config"
 	"github.com/Octops/agones-discover-openmatch/pkg/matchfunction/functions"
@@ -10,9 +13,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"net"
 	"open-match.dev/open-match/pkg/pb"
-	"time"
 )
 
 type MatchFunction interface {
@@ -64,7 +65,7 @@ func (s *Server) Serve(ctx context.Context, port int32) error {
 
 	// TODO: PlayerCapacity 10 is a random number but must match with the GS Status.Players.Capacity
 	// The MMF should have a Register function that should be passed to the Server
-	s.RegisterMatchFunction(service.NewMatchFunctionService, functions.MatchByGamePlayersCapacity(10))
+	s.RegisterMatchFunction(service.NewMatchFunctionService, functions.MatchWithBackfills())
 
 	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
