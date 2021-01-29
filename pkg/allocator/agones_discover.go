@@ -3,6 +3,7 @@ package allocator
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
 	"github.com/Octops/agones-discover-openmatch/pkg/extensions"
 	"github.com/pkg/errors"
@@ -25,7 +26,8 @@ type GameServersResponse struct {
 
 // Allocate will only assign a GameServer to an Assignment if the Capacity (Players.Status.Capacity - Players.Stats.Count)
 // is <= the number of the TicketsIds part of the Assignment
-func (c *AgonesDiscoverAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsRequest) error {
+//  I assume this is assign not allocate
+func (c *AgonesDiscoverAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsRequest, backfillID string) error {
 	logger := runtime.Logger().WithField("component", "allocator")
 
 	for _, assignmentGroup := range req.Assignments {

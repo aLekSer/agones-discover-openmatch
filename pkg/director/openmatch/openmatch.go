@@ -3,6 +3,11 @@ package openmatch
 import (
 	"context"
 	"fmt"
+	"io"
+	"math/rand"
+	"strings"
+	"time"
+
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
 	"github.com/Octops/agones-discover-openmatch/pkg/allocator"
 	"github.com/Octops/agones-discover-openmatch/pkg/config"
@@ -11,11 +16,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"io"
-	"math/rand"
 	"open-match.dev/open-match/pkg/pb"
-	"strings"
-	"time"
 )
 
 type Assigner interface {
@@ -129,7 +130,7 @@ func AssignTickets(client pb.BackendServiceClient, allocatorService *allocator.A
 		for _, match := range matches {
 			req := CreateAssignTicketRequestForMatch(match)
 
-			err := allocatorService.Allocate(ctx, req)
+			err := allocatorService.Allocate(ctx, req, match.GetBackfill().Id)
 			if err != nil {
 				err := errors.Wrapf(err, "failed to allocate servers for match %v", match.GetMatchId())
 				logger.Error(err)

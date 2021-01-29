@@ -1,9 +1,10 @@
 package allocator
 
 import (
-	pb_agones "agones.dev/agones/pkg/allocation/go"
 	"context"
 	"fmt"
+
+	pb_agones "agones.dev/agones/pkg/allocation/go"
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
 	"github.com/Octops/agones-discover-openmatch/pkg/extensions"
 	"github.com/pkg/errors"
@@ -25,7 +26,7 @@ func NewAgonesAllocator(client *AgonesAllocatorClient) *AgonesAllocator {
 	return &AgonesAllocator{Client: client}
 }
 
-func (a *AgonesAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsRequest) error {
+func (a *AgonesAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsRequest, backfillId string) error {
 	logger := runtime.Logger().WithField("component", "allocator")
 
 	for _, assignmentGroup := range req.Assignments {
@@ -34,6 +35,8 @@ func (a *AgonesAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsReq
 			return errors.Wrap(err, "the assignment does not have a valid filter extension")
 		}
 
+		labels := map[string]string{}
+		labels["backfill_id"] = backfillId
 		//TODO: Add PreferredGameServerSelector, MetaPatch, Scheduling. It must be part of the extensions
 		request := &pb_agones.AllocationRequest{
 			Namespace: a.Client.Config.Namespace,
@@ -43,9 +46,10 @@ func (a *AgonesAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsReq
 			MultiClusterSetting: &pb_agones.MultiClusterSetting{
 				Enabled: a.Client.Config.MultiCluster,
 			},
+			MetaPatch: &pb_agones.MetaPatch{Labels: labels},
 		}
 
-		resp, err := a.Client.Allocate(ctx, request)
+		resp, err := a.Client.Allocate(ctx, request, backfillId)
 		if err != nil {
 			errStatus, ok := status.FromError(err)
 			if ok && errStatus.Message() == NotAvailableGameServerToAllocateMessage {

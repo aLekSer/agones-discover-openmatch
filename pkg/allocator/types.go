@@ -3,6 +3,7 @@ package allocator
 import (
 	"context"
 	"errors"
+
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
 	"github.com/sirupsen/logrus"
 	"open-match.dev/open-match/pkg/pb"
@@ -18,7 +19,7 @@ type AllocatorService struct {
 }
 
 type GameServerAllocator interface {
-	Allocate(ctx context.Context, req *pb.AssignTicketsRequest) error
+	Allocate(ctx context.Context, req *pb.AssignTicketsRequest, backfillID string) error
 }
 
 // Allocate Dedicated GameServers
@@ -36,7 +37,7 @@ type GameSessionAllocatorService interface {
 // Usually that could be done by pushing a GameServerAllocation request or talking directly to
 // the GameServer Allocator Service from Agones
 type GameServerAllocatorClient interface {
-	Allocate(ctx context.Context, req *pb.AssignTicketsRequest) error
+	Allocate(ctx context.Context, req *pb.AssignTicketsRequest, backfillID string) error
 }
 
 // GameServerDiscoveryClient communicates with some sort of underlying infrastructure or service
@@ -52,6 +53,6 @@ func NewAllocatorService(service GameServerAllocator) *AllocatorService {
 	}
 }
 
-func (s *AllocatorService) Allocate(ctx context.Context, req *pb.AssignTicketsRequest) error {
-	return s.GameServerAllocator.Allocate(ctx, req)
+func (s *AllocatorService) Allocate(ctx context.Context, req *pb.AssignTicketsRequest, backfillID string) error {
+	return s.GameServerAllocator.Allocate(ctx, req, backfillID)
 }

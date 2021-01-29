@@ -1,10 +1,11 @@
 package functions
 
 import (
+	"testing"
+
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"open-match.dev/open-match/pkg/pb"
-	"testing"
 )
 
 /*
@@ -216,7 +217,7 @@ func TestMatchByGamePlayersCapacity(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			matches, err := MatchByGamePlayersCapacity(tc.capacity)(tc.profile, tc.poolTickets)
+			matches, err := MatchByGamePlayersCapacity(tc.capacity)(tc.profile, tc.poolTickets, map[string][]*pb.Backfill{})
 			if tc.wantErr.want {
 				require.Error(t, err)
 				require.Equal(t, tc.wantErr.err, err)

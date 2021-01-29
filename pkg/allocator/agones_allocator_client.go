@@ -1,15 +1,16 @@
 package allocator
 
 import (
-	pb "agones.dev/agones/pkg/allocation/go"
 	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"io/ioutil"
+
+	pb "agones.dev/agones/pkg/allocation/go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"io/ioutil"
 )
 
 var (
@@ -58,7 +59,7 @@ func NewAgonesAllocatorClient(config *AgonesAllocatorClientConfig) (*AgonesAlloc
 	}, nil
 }
 
-func (c *AgonesAllocatorClient) Allocate(ctx context.Context, request *pb.AllocationRequest) (*pb.AllocationResponse, error) {
+func (c *AgonesAllocatorClient) Allocate(ctx context.Context, request *pb.AllocationRequest, backfillId string) (*pb.AllocationResponse, error) {
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", c.Config.AllocatorServiceHost, c.Config.AllocatorServicePort), c.DialOpts)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create dial remote allocator service")

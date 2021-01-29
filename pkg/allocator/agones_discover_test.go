@@ -5,15 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
+	"strconv"
+	"testing"
+	"time"
+
 	"github.com/Octops/agones-discover-openmatch/pkg/extensions"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-	"math/rand"
 	"open-match.dev/open-match/pkg/pb"
-	"strconv"
-	"testing"
-	"time"
 )
 
 func TestAgonesDiscoverAllocator_SetConnection(t *testing.T) {
@@ -86,7 +87,7 @@ func TestAgonesDiscoverAllocator_SetConnection(t *testing.T) {
 			client.On("ListGameServers", context.Background(), filter.Map()).
 				Return(resp, nil)
 
-			err = discoverAllocator.Allocate(context.Background(), tc.ticketRequest)
+			err = discoverAllocator.Allocate(context.Background(), tc.ticketRequest, "")
 			require.NoError(t, err)
 			client.AssertExpectations(t)
 
@@ -256,7 +257,7 @@ func TestAgonesDiscoverAllocator_Allocate(t *testing.T) {
 				Assignments: generateAssignments(tc.assignments, generateTicketsIds(tc.tickets), filter),
 			}
 
-			err = discoverAllocator.Allocate(context.Background(), req)
+			err = discoverAllocator.Allocate(context.Background(), req, "")
 			if tc.wantErr.want {
 				client.AssertNumberOfCalls(t, "ListGameServers", 0)
 				require.Error(t, err)
