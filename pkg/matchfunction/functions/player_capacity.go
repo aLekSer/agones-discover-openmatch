@@ -116,8 +116,8 @@ func makeMatches(profile *pb.MatchProfile, tickets []*pb.Ticket, backfills []*pb
 	}
 
 	matches = append(matches, newMatches...)
-	if len(remainingTickets) > 0 {
-		match, err := makeMatchWithBackfill(profile, remainingTickets)
+	for i := 0; i < len(remainingTickets); i++ {
+		match, err := makeMatchWithBackfill(profile, remainingTickets[i:i+1])
 		if err != nil {
 			return nil, err
 		}
@@ -227,11 +227,15 @@ func setOpenSlots(b *pb.Backfill, val int32) error {
 	b.Extensions[openSlotsKey] = any
 	return nil
 }
+
+var matchId = 0
+
 func newMatch(profile string, tickets []*pb.Ticket, b *pb.Backfill) pb.Match {
+	matchId++
 	t := time.Now().Format("2006-01-02T15:04:05.00")
 
 	return pb.Match{
-		MatchId:       fmt.Sprintf("profile-%s-time-%s-num", profile, t),
+		MatchId:       fmt.Sprintf("profile-%s-time-%s-num-%d", profile, t, matchId),
 		MatchProfile:  profile,
 		MatchFunction: "Backfill",
 		Tickets:       tickets,

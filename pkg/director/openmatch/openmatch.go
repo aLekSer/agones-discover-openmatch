@@ -114,6 +114,7 @@ func fetchMatches(ctx context.Context, client pb.BackendServiceClient, profile *
 			return nil, errors.Wrapf(err, "failed to receive matches from stream")
 		}
 
+		logger.Infof("New match: %+v", resp.GetMatch())
 		result = append(result, resp.GetMatch())
 	}
 

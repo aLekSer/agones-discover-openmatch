@@ -30,7 +30,7 @@ spec:
         app: agones-openmatch-mmf
     spec:
       containers:
-        - image: octops/agones-openmatch:${TAG}
+        - image: agones-openmatch:7a0528b1
           name: mmf
           args:
             - mmf
@@ -43,7 +43,7 @@ spec:
             - name: OPENMATCH_MATCH_FUNCTION_PORT
               value: "8091"
             - name: OPENMATCH_QUERY_SERVICE_ADDR
-              value: "om-query.open-match.svc.cluster.local:50503"
+              value: "open-match-query.open-match.svc.cluster.local:50503"
           resources:
             requests:
               cpu: "0.1"
@@ -69,7 +69,7 @@ spec:
         app: agones-openmatch-director
     spec:
       containers:
-        - image: octops/agones-openmatch:${TAG}
+        - image: agones-openmatch:7a0528b1
           name: director
           args:
 # Arguments for mode=discover
@@ -90,7 +90,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: OPENMATCH_BACKEND_ADDR
-              value: "om-backend.open-match.svc.cluster.local:50505"
+              value: "open-match-backend.open-match.svc.cluster.local:50505"
             - name: OPENMATCH_MATCH_FUNCTION_HOST
               value: "agones-openmatch-mmf.agones-openmatch.svc.cluster.local"
             - name: OPENMATCH_MATCH_FUNCTION_PORT
@@ -133,7 +133,7 @@ spec:
         app: agones-openmatch-players
     spec:
       containers:
-        - image: octops/agones-openmatch:${TAG}
+        - image: agones-openmatch:7a0528b1
           name: simulator
           args:
             - player
@@ -144,7 +144,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: OPENMATCH_FRONTEND_ADDR
-              value: "om-frontend.open-match.svc.cluster.local:50504"
+              value: "open-match-frontend.open-match.svc.cluster.local:50504"
           resources:
             requests:
               cpu: "0.1"
