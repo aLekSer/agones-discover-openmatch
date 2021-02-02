@@ -6,8 +6,6 @@ import (
 
 	pb_agones "agones.dev/agones/pkg/allocation/go"
 	"github.com/Octops/agones-discover-openmatch/internal/runtime"
-	"github.com/Octops/agones-discover-openmatch/pkg/extensions"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc/status"
 	"open-match.dev/open-match/pkg/pb"
 )
@@ -30,21 +28,25 @@ func (a *AgonesAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsReq
 	logger := runtime.Logger().WithField("component", "allocator")
 
 	for _, assignmentGroup := range req.Assignments {
-		filter, err := extensions.ExtractFilterFromExtensions(assignmentGroup.Assignment.Extensions)
-		if err != nil {
-			return errors.Wrap(err, "the assignment does not have a valid filter extension")
-		}
+		/*
+			filter, err := extensions.ExtractFilterFromExtensions(assignmentGroup.Assignment.Extensions)
+			if err != nil {
+				return errors.Wrap(err, "the assignment does not have a valid filter extension")
+			}
+		*/
 
 		labels := map[string]string{}
 		labels["backfill_id"] = backfillId
+		filters := map[string]string{}
+		filters["region"] = "us-west-2"
 		//TODO: Add PreferredGameServerSelector, MetaPatch, Scheduling. It must be part of the extensions
 		request := &pb_agones.AllocationRequest{
 			Namespace: a.Client.Config.Namespace,
 			RequiredGameServerSelector: &pb_agones.LabelSelector{
-				MatchLabels: filter.Labels,
+				MatchLabels: filters,
 			},
 			MultiClusterSetting: &pb_agones.MultiClusterSetting{
-				Enabled: a.Client.Config.MultiCluster,
+				Enabled: false, //a.Client.Config.MultiCluster,
 			},
 			MetaPatch: &pb_agones.MetaPatch{Labels: labels},
 		}
@@ -59,6 +61,7 @@ func (a *AgonesAllocator) Allocate(ctx context.Context, req *pb.AssignTicketsReq
 
 			return err
 		}
+		logger.Infof("gameserver %+v connection %s assigned to request, total tickets: %d", resp, assignmentGroup.Assignment.Connection, len(assignmentGroup.TicketIds))
 
 		if len(resp.GetPorts()) > 0 {
 			address := fmt.Sprintf("%s:%d", resp.Address, resp.Ports[0].Port)

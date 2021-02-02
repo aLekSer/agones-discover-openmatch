@@ -34,7 +34,7 @@ TESTS    := $(shell find internal cmd -name '*.go' -type f -not -name '*.pb.go' 
 
 OCTOPS_BIN := bin/agones-openmatch
 
-IMAGE_REPO=gcr.io/backfill-dev/agones-openmatch
+IMAGE_REPO=agones-openmatch
 DOCKER_IMAGE_TAG ?= $(IMAGE_REPO):${VERSION}
 RELEASE_TAG=0.1.0
 
@@ -92,6 +92,9 @@ docker:
 
 push: docker
 	docker push $(DOCKER_IMAGE_TAG)
+
+push-kind: docker
+	kind load docker-image  $(DOCKER_IMAGE_TAG)
 
 release: docker
 	docker tag $(DOCKER_IMAGE_TAG) $(IMAGE_REPO):latest

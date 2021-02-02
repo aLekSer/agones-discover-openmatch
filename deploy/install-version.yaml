@@ -30,7 +30,7 @@ spec:
         app: agones-openmatch-mmf
     spec:
       containers:
-        - image: agones-openmatch:7a0528b1
+        - image: agones-openmatch:1766813
           name: mmf
           args:
             - mmf
@@ -69,14 +69,22 @@ spec:
         app: agones-openmatch-director
     spec:
       containers:
-        - image: agones-openmatch:7a0528b1
+        - image: agones-openmatch:1766813
           name: director
           args:
 # Arguments for mode=discover
             - director
-            - --mode=discover
-            - --octops-discover-url=http://octops-discover.agones-openmatch.svc.cluster.local:8081
+# - --mode=discover
+#- --octops-discover-url=http://octops-discover.agones-openmatch.svc.cluster.local:8081
+#- --interval=1s
+#- --verbose
+            - --mode=agones
             - --interval=1s
+            - --key=/tls/crt/tls.key
+            - --cert=/tls/crt/tls.crt
+            - --cacert=/tls/ca/tls-ca.crt
+            - --allocator-host=10.105.223.155 # IP of the exposed Agones Allocator Service
+            - --allocator-port=443 # PORT of the exposed Agones Allocator Service
             - --verbose
 # Arguments for mode=agones
 #            - --mode=agones
@@ -133,7 +141,7 @@ spec:
         app: agones-openmatch-players
     spec:
       containers:
-        - image: agones-openmatch:7a0528b1
+        - image: agones-openmatch:1766813
           name: simulator
           args:
             - player
